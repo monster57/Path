@@ -8,7 +8,6 @@ import java.util.*;
 public class PathLib {
     private Map<String , List<String>> database;
     private Map<String , String> countryList;
-    List <String> routes = new ArrayList<String>();
     public PathLib(String fileName , String countryFile) {
         Database data = new Database();
         database = data.databaseCreator(fileName);
@@ -24,49 +23,49 @@ public class PathLib {
         }
         return false;
     }
-
-    public  String findStart(List<String> directPath){
-        String newStart = null;
-        for(String ele: directPath){
-            if(!routes.contains(addCountry(ele))){
-                System.out.println("this is routes "+ routes);
-                System.out.println("this is data element "+database.get(ele));
-                boolean isCityInDatabase = routes.contains(addCountry(database.get(ele).get(0)));
-                if(database.get(ele).size()!=1 ){
-                    newStart = ele;
-                    break;
-                }
-            }
-        }
-        return newStart;
-    }
-
     public String addCountry(String city){
         String country = countryList.get(city);
         return city+"["+country+"]";
-
     }
 
-    public boolean isPathAvailable(String source , String destination){
+    public List<List<String>> getAllPath(String source, String destination) {
+        List<String> path = new ArrayList<String>();
+        List<List<String>> allPath = new ArrayList<List<String>>();
+        givePath(path, allPath, source, destination);
+        return allPath;
+    }
 
-        List<String> directPath = database.get(source);
-        System.out.println("this is the directpath "+directPath);
-
-        routes.add(addCountry(source));
-
-        if(directPath.contains(destination)){
-            routes.add(addCountry(destination));
-            return true;
+    private void givePath(List<String> path, List<List<String>> allPath,String source, String destination) {
+        path.add(addCountry(source));
+        if (source.equals(destination)) {
+            allPath.add(new ArrayList<String>(path));
+            path.remove(addCountry(source));
+            return;
         }
-        String newStart = findStart(directPath);
-        return isPathAvailable(newStart , destination);
+        List<String> destinationList = database.get(source);
+        for (int counter = 0; counter < destinationList.size(); counter++) {
+            if (!path.contains(addCountry(destinationList.get(counter)))) {
+                givePath(path, allPath, destinationList.get(counter), destination);
+            }
+        }
+        path.remove(addCountry(source));
     }
 
-    public String giveRoutes(String source  , String destination){
-        String path = null;
-        if(isPathAvailable(source , destination)){
-            path  = String.join("->",routes);
+    public List<String> giveRoutes(String source  , String destination){
+        List<String> pathList = new ArrayList<String>();
+        List<List<String>> ListOfPathList = getAllPath(source , destination);
+        for(List<String> ele:ListOfPathList){
+            pathList.add(String.join("->",ele));
         }
-        return path;
+        return pathList;
     }
+    public String printPath(String option , String Source , String destination){
+        List <String> list = giveRoutes(Source , destination);
+        if(option.equals("-a")){
+            String allPath = String.join("\r\n" , list);
+            return allPath;
+        }
+        return list.get(0);
+    }
+
 }
