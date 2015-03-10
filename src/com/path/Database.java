@@ -42,5 +42,17 @@ public class Database{
         Map<String , List<String>> map = database.mapper(arrOfString);
         return map;
     }
-
+    public Map<String,String> countryReader(String countryFile){
+        MyFileReader file = new MyFileReader();
+        String content = file.readFile(countryFile);
+        Map<String,String> getCountryName = new HashMap<String,String>();
+        String[] lines = content.split("\r\n");
+        for(String line:lines){
+            if(line!=null) {
+                String path[] = line.split(",");
+                getCountryName.put(path[0], path[1]);
+            }
+        }
+        return getCountryName;
+    }
 }
