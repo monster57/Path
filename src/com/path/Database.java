@@ -32,14 +32,29 @@ public class Database{
         }
 
         return map;
-
     }
-    public Map<String , List<String>> databaseCreator(String fileName){
+    public String[] textSplitter(String fileName){
         MyFileReader file = new MyFileReader();
         Database database = new Database();
         String str = file.readFile(fileName);
         String[] arrOfString = str.split("\r\n");
-        Map<String , List<String>> map = database.mapper(arrOfString);
+        return arrOfString;
+    }
+    public Map<String , Integer> costSetter(String fileName , String countryFile){
+        PathLib path = new PathLib(fileName , countryFile);
+        Map<String ,Integer> costForRoute = new HashMap<String , Integer>();
+        String[] arrOfString = textSplitter(fileName);
+        for(String ele:arrOfString){
+            String[] cities = ele.split(",");
+            costForRoute.put( path.addCountry(cities[0])+"->"+path.addCountry(cities[1]) ,Integer.parseInt(cities[2]));
+            costForRoute.put(path.addCountry(cities[0])+"->"+path.addCountry(cities[0]) , Integer.parseInt(cities[2]));
+        }
+        return costForRoute;
+    }
+
+    public Map<String , List<String>> databaseCreator(String fileName){
+        String[] arrOfString = textSplitter(fileName);
+        Map<String , List<String>> map = mapper(arrOfString);
         return map;
     }
     public Map<String,String> countryReader(String countryFile){

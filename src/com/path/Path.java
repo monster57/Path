@@ -21,15 +21,15 @@ public class Path{
         }
 
 
-        PathLib PathCreator = new PathLib(fileName , countryList);
-        if(!PathCreator.isCityPresentInDatabase(source))
+        PathLib pathCreator = new PathLib(fileName , countryList);
+        if(!pathCreator.isCityPresentInDatabase(source))
             System.out.println("No city named "+source+" in database");
-        if(!PathCreator.isCityPresentInDatabase(destination)){
+        if(!pathCreator.isCityPresentInDatabase(destination)){
             System.out.println("No city named "+destination+" in database");
         }
-        boolean cityPresent = PathCreator.isCityPresentInDatabase(source) && PathCreator.isCityPresentInDatabase(destination);
+        boolean cityPresent = pathCreator.isCityPresentInDatabase(source) && pathCreator.isCityPresentInDatabase(destination);
         if(cityPresent && option.equals("-f") && countryOption.equals("-c")){
-            System.out.println(PathCreator.printPath(otherOption , source ,destination));
+            System.out.println(pathCreator.printPath(otherOption ,fileName , countryList, source ,destination));
         }
 
     }

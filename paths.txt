@@ -1,6 +1,6 @@
-Bangalore,Singapore
-Singapore,Seoul
-Singapore,Dubai
-Dubai,Seoul
-Seoul,Beijing
-Beijing,Tokyo
+Bangalore,Singapore,7000
+Singapore,Seoul,12000
+Singapore,Dubai,10000
+Dubai,Seoul,8000
+Seoul,Beijing,11000
+Beijing,Tokyo,9000

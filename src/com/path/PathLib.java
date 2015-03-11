@@ -43,29 +43,58 @@ public class PathLib {
             return;
         }
         List<String> destinationList = database.get(source);
-        for (int counter = 0; counter < destinationList.size(); counter++) {
-            if (!path.contains(addCountry(destinationList.get(counter)))) {
+        for (int counter = 0; counter < destinationList.size(); counter++)
+            if (!path.contains(addCountry(destinationList.get(counter))))
                 givePath(path, allPath, destinationList.get(counter), destination);
-            }
-        }
         path.remove(addCountry(source));
     }
 
     public List<String> giveRoutes(String source  , String destination){
         List<String> pathList = new ArrayList<String>();
-        List<List<String>> ListOfPathList = getAllPath(source , destination);
-        for(List<String> ele:ListOfPathList){
+        List<List<String>> listOfPathList = getAllPath(source , destination);
+
+        for(List<String> ele:listOfPathList){
             pathList.add(String.join("->",ele));
         }
         return pathList;
+
     }
-    public String printPath(String option , String Source , String destination){
-        List <String> list = giveRoutes(Source , destination);
+    public Integer costCalculater(List<String> list , Map<String , Integer> map){
+        Integer cost = 0;
+        for(int i=0;i<list.size()-1;i++){
+            cost += map.get(list.get(i)+"->"+list.get(i+1));
+        }
+        return cost;
+    }
+    public Map<Integer , String> routeCostSetter(String fileName , String countryFile , String source , String destination){
+        Map <Integer , String> map = new HashMap<Integer , String>();
+        List <String> list = giveRoutes(source , destination);
+        int count = 0;
+        Database data = new Database();
+        Map<String ,Integer> costOfRoute = data.costSetter(fileName , countryFile);
+        List<List<String>> allPath = getAllPath(source , destination);
+        for(List<String> ele:allPath){
+            Integer cost = costCalculater(ele , costOfRoute);
+            map.put(cost ,list.get(count++));
+        }
+        return map;
+
+    }
+    public List<String> setPathListWithCost(Map<Integer , String> map){
+        Set <Integer> set = map.keySet();
+        List<String> list = new ArrayList();
+        for(Integer ele: set){
+            list.add(map.get(ele)+"\r\nTotal cost: "+ele);
+        }
+        return list;
+    }
+    public String printPath(String option ,String fileName,String countryFile, String source , String destination){
+        Map<Integer , String> map = routeCostSetter(fileName , countryFile , source , destination);
+        List<String> list = setPathListWithCost(map);
         if(option.equals("-a")){
-            String allPath = String.join("\r\n" , list);
-            return allPath;
+            String allPathWithCost = String.join("\r\n" , list);
+            return allPathWithCost;
         }
         return list.get(0);
     }
-
 }
