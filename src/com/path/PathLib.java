@@ -82,8 +82,12 @@ public class PathLib {
     }
     public List<String> setPathListWithCost(Map<Integer , String> map){
         Set <Integer> set = map.keySet();
+        SortedSet<Integer> sortedSet = new TreeSet();
+        for(Integer ele:set){
+            sortedSet.add(ele);
+        }
         List<String> list = new ArrayList();
-        for(Integer ele: set){
+        for(Integer ele: sortedSet){
             list.add(map.get(ele)+"\r\nTotal cost: "+ele);
         }
         return list;
